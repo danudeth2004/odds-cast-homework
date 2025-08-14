@@ -22,7 +22,7 @@ module Admin
 
     # POST /admin/articles or /admin/articles.json
     def create
-      @article = Article.new(admin_article_params)
+      @article = Article.new(article_params)
 
       respond_to do |format|
         if @article.save
@@ -38,8 +38,8 @@ module Admin
     # PATCH/PUT /admin/articles/1 or /admin/articles/1.json
     def update
       respond_to do |format|
-        if @article.update(admin_article_params)
-          format.html { redirect_to [ :admin, @article ], notice: "Article was successfully updated.", status: :see_other }
+        if @article.update(article_params)
+          format.html { redirect_to [ :admin, @article ], status: :see_other }
           format.json { render :show, status: :ok, location: @article }
         else
           format.html { render :edit, status: :unprocessable_entity }
@@ -53,7 +53,7 @@ module Admin
       @article.destroy!
 
       respond_to do |format|
-        format.html { redirect_to admin_articles_path, notice: "Article was successfully destroyed.", status: :see_other }
+        format.html { redirect_to admin_articles_path, status: :see_other }
         format.json { head :no_content }
       end
     end
@@ -65,8 +65,8 @@ module Admin
       end
 
       # Only allow a list of trusted parameters through.
-      def admin_article_params
-        params.expect(:article, [ :title, :description ])
+      def article_params
+        params.require(:article).permit(:title, :description)
       end
   end
 end
