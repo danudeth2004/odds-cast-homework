@@ -1,6 +1,6 @@
 module Admin
   class Admin::ArticlesController < ApplicationController
-    before_action :set_admin_article, only: %i[ show edit update destroy ]
+    before_action :set_admin_article, only: %i[ show edit update destroy submit approve reject ]
 
     # GET /admin/articles or /admin/articles.json
     def index
@@ -23,10 +23,15 @@ module Admin
     # POST /admin/articles or /admin/articles.json
     def create
       @article = Article.new(article_params)
+      if params[:status_type] == "draft"
+        @article.status = :draft
+      else
+        @article.status = :waiting_for_review
+      end
 
       respond_to do |format|
         if @article.save
-          format.html { redirect_to [ :admin, @article ], notice: "Article was successfully created." }
+          format.html { redirect_to [ :admin, @article ] }
           format.json { render :show, status: :created, location: @article }
         else
           format.html { render :new, status: :unprocessable_entity }
@@ -58,10 +63,34 @@ module Admin
       end
     end
 
+    def submit
+      if @article.update(article_params.merge(status: "waiting_for_review"))
+        redirect_to [ :admin, @article ], status: :see_other
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+      end
+    end
+
+    def approve
+      if @article.update(article_params.merge(status: "published"))
+        redirect_to [ :admin, @article ], status: :see_other
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+      end
+    end
+
+    def reject
+      if @article.update(article_params.merge(status: "draft"))
+        redirect_to [ :admin, @article ], status: :see_other
+      else
+        format.html { render :edit, status: :unprocessable_entity }
+      end
+    end
+
     private
       # Use callbacks to share common setup or constraints between actions.
       def set_admin_article
-        @article = Article.find(params.expect(:id))
+        @article = Article.find(params[:id])
       end
 
       # Only allow a list of trusted parameters through.

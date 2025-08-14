@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   namespace :admin do
     resources :articles do
       member do
+        patch :save
         patch :submit
         patch :approve
         patch :reject
