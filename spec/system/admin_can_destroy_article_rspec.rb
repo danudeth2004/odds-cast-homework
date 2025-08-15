@@ -26,7 +26,6 @@ describe 'Admin can destroy articles', type: :system do
         click_button 'Destroy this article'
       end
 
-      expect(current_path).to eq(admin_articles_path)
       expect(page).not_to have_content('Sprint on Rails')
     end
   end

@@ -2,6 +2,7 @@ require 'rails_helper'
 
 describe 'Admin can create article', type: :system do
   it 'allows admin to create an article as draft' do
+    login_as_admin
     visit new_admin_article_path
 
     fill_in 'Title', with: 'Sprint on Rails'
