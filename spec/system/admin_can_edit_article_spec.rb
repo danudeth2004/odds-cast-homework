@@ -53,7 +53,7 @@ describe 'Admin can updates articles', type: :system do
     it 'sends article back to draft' do
       login_as_admin
       visit edit_admin_article_path(published_article)
-      click_button 'Back to Draft'
+      click_button 'Revert to Draft'
 
       published_article.reload
       expect(page).to have_content('draft'.humanize)
