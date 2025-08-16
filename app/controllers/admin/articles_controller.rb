@@ -4,7 +4,11 @@ module Admin
 
     # GET /admin/articles or /admin/articles.json
     def index
-      @articles = Article.all
+      if params[:status].present? && Article.statuses.keys.include?(params[:status])
+        @articles = Article.where(status: params[:status])
+      else
+        @articles = Article.all
+      end
     end
 
     # GET /admin/articles/1 or /admin/articles/1.json

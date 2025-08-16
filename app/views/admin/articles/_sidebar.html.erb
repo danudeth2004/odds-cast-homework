@@ -1,0 +1,60 @@
+<% current = params[:status].presence || "all" %>
+<aside class="md:sticky md:top-20">
+  <div class="rounded-2xl bg-slate-800/60 border border-white/10 p-3">
+    <div class="px-3 py-2 text-xs uppercase tracking-wider text-slate-300">Filters</div>
+
+    <nav class="flex md:flex-col gap-2 cursor-pointer" role="tablist" aria-label="Articles filter">
+      <!-- All -->
+      <%= link_to admin_articles_path(status: nil),
+          class: "tw-tab #{current=='all' ? 'tw-tab--active' : ''}",
+          role: "tab",
+          'aria-current': (current=='all') do %>
+        <svg class="tw-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z" />
+        </svg>
+        <span>All</span>
+      <% end %>
+
+      <!-- Draft -->
+      <%= link_to admin_articles_path(status: "draft"),
+          class: "tw-tab #{current=='draft' ? 'tw-tab--active' : ''}",
+          role: "tab",
+          'aria-current': (current=='draft') do %>
+        <svg class="tw-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M16.862 3.487a2.1 2.1 0 0 1 2.97 2.97L9.75 16.54l-3.9.93.93-3.9 10.082-10.082z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M19 14v4.2A1.8 1.8 0 0 1 17.2 20H6.8A1.8 1.8 0 0 1 5 18.2V7.8A1.8 1.8 0 0 1 6.8 6H11"/>
+        </svg>
+        <span>Draft</span>
+      <% end %>
+
+      <!-- Waiting for review -->
+      <%= link_to admin_articles_path(status: "waiting_for_review"),
+          class: "tw-tab #{current=='waiting_for_review' ? 'tw-tab--active' : ''}",
+          role: "tab",
+          'aria-current': (current=='waiting_for_review') do %>
+        <svg class="tw-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="M12 6v6l4 2"/>
+          <circle cx="12" cy="12" r="9" stroke-width="1.8"/>
+        </svg>
+        <span>Waiting for review</span>
+      <% end %>
+
+      <!-- Published -->
+      <%= link_to admin_articles_path(status: "published"),
+          class: "tw-tab #{current=='published' ? 'tw-tab--active' : ''}",
+          role: "tab",
+          'aria-current': (current=='published') do %>
+        <svg class="tw-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8"
+            d="m5 13 4 4L19 7"/>
+          <circle cx="12" cy="12" r="9" stroke-width="1.8"/>
+        </svg>
+        <span>Published</span>
+      <% end %>
+    </nav>
+  </div>
+</aside>

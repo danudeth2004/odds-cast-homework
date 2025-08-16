@@ -10,26 +10,55 @@
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <nav class="p-4 flex justify-end items-center">
-      <% if authenticated? %>
-        <%= button_to "Log out", session_path, method: :delete,
-      class: "bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300" %>
-      <% end %>
+  <body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 min-h-screen text-slate-100">
+    <nav class="sticky top-0 z-10 backdrop-blur bg-slate-900/60 border-b border-white/10 px-4 py-3">
+      <div class="mx-auto max-w-7xl flex items-center justify-between">
+        <% admin_view = controller_path.start_with?("admin/") %>
+        <% if admin_view %>
+          <% status_key   = params[:status].presence %>
+          <% filter_label = (status_key ? status_key.humanize : "All") %>
+
+          <div class="flex items-center gap-2 text-sm">
+            <%= link_to "Dashboard", admin_articles_path,
+                  class: "text-slate-300 hover:text-white transition" %>
+            <span class="text-slate-500">/</span>
+
+            <% if controller_name == "articles" && action_name == "index" %>
+              <%= link_to "Articles", admin_articles_path(status: nil),
+                    class: "text-slate-300 hover:text-white transition" %>
+              <span class="text-slate-500">/</span>
+              <span class="text-white font-medium">Filter: <%= filter_label %></span>
+            <% else %>
+              <%= link_to "Articles",
+                    admin_articles_path(status: status_key),
+                    class: "text-slate-300 hover:text-white transition" %>
+              <span class="text-slate-500">/</span>
+              <% if defined?(@article) && @article.present? %>
+                <span class="text-white font-medium"><%= truncate(@article.title, length: 40) %></span>
+              <% else %>
+                <span class="text-white font-medium"><%= content_for?(:title) ? yield(:title) : controller_name.humanize %></span>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+        <% if authenticated? %>
+          <%= button_to "Logout", session_path, method: :delete,
+              class: "inline-flex items-center justify-center
+                      rounded-xl px-4 py-2 text-sm font-medium
+                      text-red-300 border border-red-500/30 bg-red-500/10
+                      hover:bg-red-500/20 hover:text-red-200 transition" %>
+        <% end %>
+      </div>
     </nav>
-    <main class="container mx-auto mt-28 px-5 flex">
+    <main class="mx-auto max-w-7xl px-4 py-6">
       <%= yield %>
     </main>
   </body>
